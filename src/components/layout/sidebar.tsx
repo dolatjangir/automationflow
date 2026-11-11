@@ -115,6 +115,7 @@ const mainNavItems: NavItem[] = [
     href: "/journey",
     icon: Network,
   },
+ 
   {
     label: "Inbox",
     href: "/inbox",

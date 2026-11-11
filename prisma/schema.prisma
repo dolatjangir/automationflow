@@ -51,6 +51,13 @@ enum ExecutionStatus {
   cancelled
 }
 
+enum EnrollmentStatus {
+  active
+  completed
+  failed
+  cancelled
+}
+
 enum LogLevel {
   info
   warning
@@ -105,7 +112,8 @@ model Contact {
   ownerId String? @db.VarChar(191)
   owner   User?   @relation(fields: [ownerId], references: [id], onDelete: SetNull)
 
-  executions JourneyExecution[]
+  executions  JourneyExecution[]
+  enrollments JourneyEnrollment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -132,9 +140,10 @@ model Journey {
   createdById String? @db.VarChar(191)
   createdBy   User?   @relation("JourneyCreator", fields: [createdById], references: [id], onDelete: SetNull)
 
-  nodes      JourneyNode[]
-  edges      JourneyEdge[]
-  executions JourneyExecution[]
+  nodes       JourneyNode[]
+  edges       JourneyEdge[]
+  executions  JourneyExecution[]
+  enrollments JourneyEnrollment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -243,14 +252,52 @@ model JourneyExecution {
   completedAt DateTime?
 
   logs ExecutionLog[]
-
+  nextRunAt DateTime?
+lockedAt  DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+
+  @@index([status, nextRunAt])
+  @@index([status, lockedAt])
   @@index([journeyId, status])
   @@index([contactId])
   @@index([status])
   @@index([createdAt])
+}
+
+// ==========================================
+// JOURNEY ENROLLMENTS
+// ==========================================
+
+model JourneyEnrollment {
+  id String @id @default(cuid()) @db.VarChar(191)
+
+  journeyId String  @db.VarChar(191)
+  journey   Journey @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+
+  contactId String  @db.VarChar(191)
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  status EnrollmentStatus @default(active)
+
+  // Execution currently associated with this enrollment.
+  executionId String? @unique @db.VarChar(191)
+
+  // Enrollment source, for example manual, form, contact_created.
+  source String? @db.VarChar(100)
+
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  exitedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([journeyId, contactId])
+  @@index([journeyId, status])
+  @@index([contactId, status])
+  @@index([enrolledAt])
 }
 
 // ==========================================

@@ -365,11 +365,136 @@ function JourneyBuilderContent() {
     saveJourney("active");
   };
 
-  const handleTest = () => {
-    setToast(
-      "Preview mode only. The journey execution engine is not connected yet."
+ 
+const handleTest = async () => {
+  if (!journeyId) {
+    setToast("Journey is not ready. Please try again.");
+    return;
+  }
+
+  if (saving) {
+    setToast("Please wait until the journey is saved.");
+    return;
+  }
+
+  const hasTrigger = nodes.some((node) => node.type === "trigger");
+
+  if (!hasTrigger) {
+    setToast("Add a trigger before testing this journey.");
+    return;
+  }
+
+  try {
+    setSaving(true);
+    setToast("Saving journey before testing...");
+
+    // 1. Save the latest workflow as a draft.
+    const saveResponse = await fetch(`/api/journeys/${journeyId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: journeyName.trim() || "Untitled Journey",
+        status,
+        nodes: nodes.map((node) => ({
+          id: node.id,
+          type: node.type,
+          position: node.position,
+          data: node.data,
+        })),
+        edges: edges.map((edge) => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle,
+          targetHandle: edge.targetHandle,
+          type: edge.type,
+          label: edge.label,
+          animated: edge.animated,
+        })),
+      }),
+    });
+
+    const saveResult = await saveResponse.json();
+
+    if (!saveResponse.ok || !saveResult.success) {
+      throw new Error(saveResult.message || "Could not save journey.");
+    }
+
+    setLastSaved(
+      `Saved at ${new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`
     );
-  };
+
+    // 2. Create a new test execution.
+    const createResponse = await fetch(
+      `/api/journeys/${journeyId}/test`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          testData: {
+            firstName: "Test",
+            lastName: "Contact",
+            email: "test@example.com",
+            phone: "9999999999",
+            company: "Test Company",
+            lead_status: "Interested",
+          },
+        }),
+      }
+    );
+
+    const createResult = await createResponse.json();
+
+    if (!createResponse.ok || !createResult.success) {
+      throw new Error(
+        createResult.message || "Could not create test execution."
+      );
+    }
+
+    const executionId = createResult.data.execution.id;
+
+    // 3. Run the test execution.
+    const runResponse = await fetch(
+      `/api/journeys/${journeyId}/test/${executionId}/run`,
+      {
+        method: "POST",
+      }
+    );
+
+    const runResult = await runResponse.json();
+
+    if (!runResponse.ok || !runResult.success) {
+      throw new Error(
+        runResult.error ||
+          runResult.message ||
+          "Test execution failed."
+      );
+    }
+
+    setToast("Test journey completed successfully. Opening history...");
+
+    // 4. Open execution history for this journey.
+    router.push(`/journey/${journeyId}/executions`);
+  } catch (error) {
+    console.error("Journey test error:", error);
+
+    setToast(
+      error instanceof Error
+        ? error.message
+        : "Could not run journey test."
+    );
+  } finally {
+    setSaving(false);
+  }
+};
+
 
   if (loading) {
     return (
