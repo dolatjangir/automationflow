@@ -72,7 +72,7 @@ const mainNavItems: NavItem[] = [
   },
   {
     label: "Contact",
-    href: "/contact",
+    href: "/contacts",
     icon: Contact,
   },
   {
