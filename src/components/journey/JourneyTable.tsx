@@ -6,6 +6,7 @@ import {
   MessageSquare,
   Workflow,
   History,
+  UserPlus,
 } from "lucide-react";
 import type { Journey, JourneyChannel } from "@/types/journey";
 import JourneyActions from "@/components/journey/JourneyActions";
@@ -15,6 +16,7 @@ interface JourneyTableProps {
   onDuplicate: (journey: Journey) => void;
   onToggleStatus: (journey: Journey) => void;
   onDelete: (journey: Journey) => void;
+  onEnroll: (journey: Journey) => void;
 }
 
 const channelMeta: Record<
@@ -94,6 +96,7 @@ export default function JourneyTable({
   onDuplicate,
   onToggleStatus,
   onDelete,
+  onEnroll,
 }: JourneyTableProps) {
   if (journeys.length === 0) {
     return (
@@ -124,7 +127,7 @@ export default function JourneyTable({
   return (
     <div className="crm-card overflow-visible">
       <div className="overflow-x-auto rounded-xl">
-        <table className="w-full min-w-[960px] border-collapse text-left">
+        <table className="w-full min-w-[1080px] border-collapse text-left">
           <thead>
             <tr className="bg-[#F7FAFC] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#71849A]">
               <th className="rounded-tl-xl px-4 py-3.5">
@@ -152,6 +155,8 @@ export default function JourneyTable({
                       (journey.completed / journey.enrolled) * 100
                     )
                   : 0;
+
+              const canEnroll = journey.status === "active";
 
               return (
                 <tr
@@ -221,6 +226,22 @@ export default function JourneyTable({
 
                   <td className="px-4 py-3.5">
                     <div className="flex items-center justify-end gap-2">
+                      {/* Enroll Contacts */}
+                      <button
+                        type="button"
+                        onClick={() => onEnroll(journey)}
+                        disabled={!canEnroll}
+                        title={
+                          canEnroll
+                            ? "Enroll contacts into this journey"
+                            : "Activate this journey before enrolling contacts"
+                        }
+                        className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[#DCE7EB] bg-white px-2.5 text-[11px] font-semibold text-[#168B83] transition hover:border-[#168B83] hover:bg-[#EAF8F6] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-[#DCE7EB] disabled:hover:bg-white"
+                      >
+                        <UserPlus size={14} />
+                        <span>Enroll</span>
+                      </button>
+
                       {/* Execution History */}
                       <Link
                         href={`/journey/${journey.id}/executions`}

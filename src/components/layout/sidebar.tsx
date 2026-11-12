@@ -57,7 +57,7 @@ const mainNavItems: NavItem[] = [
   },
   {
     label: "Customers",
-    href: "/customer",
+    href: "/contacts",
     icon: Users,
   },
   {
