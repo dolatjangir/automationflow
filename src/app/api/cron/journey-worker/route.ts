@@ -6,8 +6,10 @@ import { processJourneyExecution } from "@/lib/journeys/process-execution";
 
 const BATCH_SIZE = 10;
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
+    
   try {
+ 
     // Protect this endpoint with a secret.
     const cronSecret = process.env.CRON_SECRET;
 
