@@ -304,6 +304,17 @@ if (node.type === "delay" && !isTest && delayUntil) {
         errorMessage: null,
       },
     });
+const savedExecution = await prisma.journeyExecution.findUnique({
+  where: { id: executionId },
+  select: {
+    status: true,
+    currentNodeId: true,
+    nextRunAt: true,
+    isTest: true,
+  },
+});
+
+console.log("DELAY SAVED EXECUTION:", savedExecution);
 
     // Update the enrollment only for real executions.
     if (!isTest) {
