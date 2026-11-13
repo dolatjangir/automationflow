@@ -152,7 +152,7 @@ export async function processJourneyExecution(
       let logLevel: LogLevel = LogLevel.info;
       let selectedEdge: (typeof edges)[number] | undefined;
       let selectedBranch: "yes" | "no" | undefined;
-
+      let delayUntil: Date | null = null;
       if (node.type === "trigger") {
         logMessage = `Trigger processed: ${node.title}`;
 
@@ -191,14 +191,43 @@ export async function processJourneyExecution(
         selectedEdge = edges.find(
           (edge) => edge.sourceNodeId === node.id
         );
-      } else if (node.type === "delay") {
-        logMessage =
-          "Delay node processed. No actual waiting period was applied.";
+     } else if (node.type === "delay") {
+  const duration = Number(config.duration);
+  const unit = String(config.unit ?? "minutes");
 
-        selectedEdge = edges.find(
-          (edge) => edge.sourceNodeId === node.id
-        );
-      } else if (node.type === "assign") {
+  if (!Number.isFinite(duration) || duration <= 0) {
+    throw new Error("Delay duration must be a positive number.");
+  }
+
+  const unitMilliseconds: Record<string, number> = {
+    seconds: 1000,
+    minutes: 60 * 1000,
+    hours: 60 * 60 * 1000,
+    days: 24 * 60 * 60 * 1000,
+  };
+
+  const multiplier = unitMilliseconds[unit];
+
+  if (!multiplier) {
+    throw new Error(`Unsupported delay unit: ${unit}`);
+  }
+
+  selectedEdge = edges.find(
+    (edge) => edge.sourceNodeId === node.id
+  );
+
+  if (!selectedEdge) {
+    throw new Error("Delay node has no outgoing connection.");
+  }
+
+  delayUntil = new Date(
+    Date.now() + duration * multiplier
+  );
+
+  logMessage = isTest
+    ? `Delay simulated: ${duration} ${unit}. No actual waiting applied.`
+    : `Delay scheduled for ${duration} ${unit}. Journey will resume at ${delayUntil.toISOString()}.`;
+} else if (node.type === "assign") {
         logMessage =
           "Assign node processed. No actual assignment was performed.";
 
@@ -234,6 +263,29 @@ export async function processJourneyExecution(
           } as Prisma.InputJsonValue,
         },
       });
+
+
+      // Pause live execution at a delay node.
+if (node.type === "delay" && !isTest && delayUntil) {
+  await prisma.journeyExecution.update({
+    where: { id: executionId },
+    data: {
+      status: ExecutionStatus.queued,
+      currentNodeId: selectedEdge!.targetNodeId,
+      nextRunAt: delayUntil,
+    },
+  });
+
+  return await prisma.journeyExecution.findUnique({
+    where: { id: executionId },
+    include: {
+      logs: {
+        orderBy: { createdAt: "asc" },
+      },
+    },
+  });
+}
+
 
       if (node.type === "end") {
         currentNodeId = "";
