@@ -23,47 +23,90 @@ function toObject(value: unknown): JsonObject {
   return {};
 }
 
+
 function evaluateCondition(
   config: JsonObject,
   data: JsonObject
 ): boolean {
-  const field = String(config.conditionField ?? "");
-  const operator = String(config.operator ?? "equals");
+  const field = String(config.conditionField ?? "").trim();
+  const operator = String(config.operator ?? "equals").trim();
   const expected = config.value;
+
+  if (!field) {
+    throw new Error("Condition field is required.");
+  }
+
   const actual = data[field];
 
-  const actualString = String(actual ?? "").toLowerCase();
-  const expectedString = String(expected ?? "").toLowerCase();
+  const actualString = String(actual ?? "").trim().toLowerCase();
+  const expectedString = String(expected ?? "").trim().toLowerCase();
+
+  const isEmpty = (
+    value: unknown
+  ): boolean => {
+    return (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    );
+  };
 
   switch (operator) {
     case "equals":
-      return actualString === expectedString;
+      return !isEmpty(actual) && actualString === expectedString;
 
     case "not_equals":
-      return actualString !== expectedString;
+      return !isEmpty(actual) && actualString !== expectedString;
 
     case "contains":
-      return actualString.includes(expectedString);
+      return !isEmpty(actual) && actualString.includes(expectedString);
 
     case "not_contains":
-      return !actualString.includes(expectedString);
+      return !isEmpty(actual) && !actualString.includes(expectedString);
 
-    case "greater_than":
-      return Number(actual) > Number(expected);
+    case "greater_than": {
+      const actualNumber = Number(actual);
+      const expectedNumber = Number(expected);
 
-    case "less_than":
-      return Number(actual) < Number(expected);
+      if (
+        isEmpty(actual) ||
+        isEmpty(expected) ||
+        !Number.isFinite(actualNumber) ||
+        !Number.isFinite(expectedNumber)
+      ) {
+        throw new Error("Invalid numeric values for greater_than condition.");
+      }
+
+      return actualNumber > expectedNumber;
+    }
+
+    case "less_than": {
+      const actualNumber = Number(actual);
+      const expectedNumber = Number(expected);
+
+      if (
+        isEmpty(actual) ||
+        isEmpty(expected) ||
+        !Number.isFinite(actualNumber) ||
+        !Number.isFinite(expectedNumber)
+      ) {
+        throw new Error("Invalid numeric values for less_than condition.");
+      }
+
+      return actualNumber < expectedNumber;
+    }
 
     case "is_empty":
-      return actual === undefined || actual === null || actual === "";
+      return isEmpty(actual);
 
     case "is_not_empty":
-      return actual !== undefined && actual !== null && actual !== "";
+      return !isEmpty(actual);
 
     default:
       throw new Error(`Unsupported condition operator: ${operator}`);
   }
 }
+
 
 export async function processJourneyExecution(
   executionId: string,
