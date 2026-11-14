@@ -207,7 +207,15 @@ export async function processJourneyExecution(
           config,
           triggerData
         );
-
+console.log("CONDITION DEBUG:", {
+  nodeId: node.id,
+  config,
+  triggerData,
+  actualValue: triggerData[String(config.conditionField ?? "")],
+  expectedValue: config.value,
+  operator: config.operator,
+  conditionResult,
+});
         selectedBranch = conditionResult ? "yes" : "no";
 
         selectedEdge = edges.find(
