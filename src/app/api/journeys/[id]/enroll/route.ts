@@ -180,6 +180,10 @@ export async function POST(
           company: contact.company,
           jobTitle: contact.jobTitle,
           source: contact.source,
+          // Standard Journey Builder field
+  lead_status: contact.status,
+
+  // Keep backward compatibility
           contactStatus: contact.status,
           customFields: contact.customFields,
           enrollmentId: enrollment.id,
