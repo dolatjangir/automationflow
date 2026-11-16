@@ -181,9 +181,12 @@ export async function PATCH(
               description: node.data.description ?? null,
               positionX: node.position.x,
               positionY: node.position.y,
-              config: node.data.config
-                ? (node.data.config as Prisma.InputJsonValue)
-                : undefined,
+             config:
+  node.data.config &&
+  typeof node.data.config === "object" &&
+  !Array.isArray(node.data.config)
+    ? (node.data.config as Prisma.InputJsonValue)
+    : Prisma.JsonNull,
               actionId: node.data.actionId ?? null,
               category: node.data.category ?? null,
               icon: node.data.icon ?? null,
