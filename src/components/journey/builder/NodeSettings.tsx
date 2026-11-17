@@ -16,6 +16,7 @@ import {
   X,
   Info,
   AlertCircle,
+  Bot,
 } from "lucide-react";
 
 import type {
@@ -109,6 +110,12 @@ const nodeMeta: Record<
     icon: UserRoundCheck,
     tone: "text-amber-600 bg-amber-50",
   },
+  ai_agent: {
+  title: "AI Agent",
+  subtitle: "Analyze contacts using AI",
+  icon: Bot,
+  tone: "text-indigo-600 bg-indigo-50",
+},
 
   end: {
     title: "End Journey",
@@ -338,6 +345,22 @@ export default function NodeSettings({
                 {String(config.value ?? "Interested")}
               </p>
             )}
+            {nodeType === "ai_agent" && (
+  <div className="mt-3 space-y-2 text-[11px] text-[#536579]">
+    <p>
+      Provider: {String(config.provider ?? "openai")}
+    </p>
+    <p>
+      Model: {String(config.model ?? "Not configured")}
+    </p>
+    <p>
+      Output: {String(config.outputFormat ?? "json")}
+    </p>
+    <p>
+      Save as: {String(config.outputKey ?? "aiResult")}
+    </p>
+  </div>
+)}
           </div>
         ) : (
           <>
@@ -876,6 +899,213 @@ export default function NodeSettings({
                   to load actual users.
                 </p>
               </div>
+            )}
+
+            {/* =================================
+                AI AGENT SETTINGS
+            ================================= */}
+            {nodeType === "ai_agent" && (
+              <>
+                {/* AI PROVIDER */}
+                <div>
+                  <label className={labelClass}>
+                    AI Provider
+                  </label>
+
+                  <select
+                    className={fieldClass}
+                    value={String(config.provider ?? "openai")}
+                    onChange={(event) => {
+                      setConfig({
+                        provider: event.target.value as
+                          | "openai"
+                          | "gemini"
+                          | "groq",
+                        model: "",
+                      });
+                    }}
+                  >
+                    <option value="openai">OpenAI</option>
+                    <option value="gemini">Google Gemini</option>
+                    <option value="groq">Groq</option>
+                  </select>
+                </div>
+
+                {/* MODEL */}
+                <div>
+                  <label className={labelClass}>
+                    Model Name
+                  </label>
+
+                  <input
+                    className={fieldClass}
+                    value={String(config.model ?? "")}
+                    onChange={(event) => {
+                      setConfig({ model: event.target.value });
+                    }}
+                    placeholder={
+                      config.provider === "gemini"
+                        ? "Enter Gemini model ID"
+                        : config.provider === "groq"
+                          ? "Enter Groq model ID"
+                          : "Enter OpenAI model ID"
+                    }
+                  />
+
+                  <p className="mt-1 text-[10px] text-[#8293A8]">
+                    Enter a model supported by your selected provider.
+                  </p>
+                </div>
+
+                {/* INSTRUCTIONS */}
+                <div>
+                  <label className={labelClass}>
+                    AI Instructions
+                  </label>
+
+                  <textarea
+                    rows={6}
+                    className={textareaClass}
+                    value={String(config.instructions ?? "")}
+                    onChange={(event) => {
+                      setConfig({
+                        instructions: event.target.value,
+                      });
+                    }}
+                    placeholder="Example: Analyze this lead and decide whether the customer is interested in our services."
+                  />
+
+                  <p className="mt-1 text-[10px] text-[#8293A8]">
+                    Explain what the AI agent should do.
+                  </p>
+                </div>
+
+                {/* INPUT DATA */}
+                <div>
+                  <label className={labelClass}>
+                    Input Data
+                  </label>
+
+                  <textarea
+                    rows={4}
+                    className={textareaClass}
+                    value={String(config.input ?? "{{contact}}")}
+                    onChange={(event) => {
+                      setConfig({ input: event.target.value });
+                    }}
+                    placeholder="{{contact}}"
+                  />
+
+                  <p className="mt-1 text-[10px] text-[#8293A8]">
+                    Specify the information to send to the AI agent.
+                  </p>
+                </div>
+
+                {/* OUTPUT FORMAT */}
+                <div>
+                  <label className={labelClass}>
+                    Output Format
+                  </label>
+
+                  <select
+                    className={fieldClass}
+                    value={String(config.outputFormat ?? "json")}
+                    onChange={(event) => {
+                      setConfig({
+                        outputFormat: event.target.value as "text" | "json",
+                      });
+                    }}
+                  >
+                    <option value="json">JSON</option>
+                    <option value="text">Plain Text</option>
+                  </select>
+                </div>
+
+                {/* OUTPUT KEY */}
+                <div>
+                  <label className={labelClass}>
+                    Save Result As
+                  </label>
+
+                  <input
+                    className={fieldClass}
+                    value={String(config.outputKey ?? "aiResult")}
+                    onChange={(event) => {
+                      setConfig({ outputKey: event.target.value });
+                    }}
+                    placeholder="aiResult"
+                  />
+
+                  <p className="mt-1 text-[10px] text-[#8293A8]">
+                    Later workflow nodes can use this result.
+                  </p>
+                </div>
+
+                {/* TEMPERATURE */}
+                <div>
+                  <label className={labelClass}>
+                    Temperature (0–2)
+                  </label>
+
+                  <input
+                    type="number"
+                    min={0}
+                    max={2}
+                    step={0.1}
+                    className={fieldClass}
+                    value={Number(config.temperature ?? 0.2)}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+
+                      setConfig({
+                        temperature: Math.min(
+                          2,
+                          Math.max(0, Number.isFinite(value) ? value : 0.2)
+                        ),
+                      });
+                    }}
+                  />
+                </div>
+
+                {/* MAX TOKENS */}
+                <div>
+                  <label className={labelClass}>
+                    Maximum Output Tokens
+                  </label>
+
+                  <input
+                    type="number"
+                    min={1}
+                    max={16000}
+                    className={fieldClass}
+                    value={Number(config.maxTokens ?? 1000)}
+                    onChange={(event) => {
+                      const value = Number(event.target.value);
+
+                      setConfig({
+                        maxTokens: Math.min(
+                          16000,
+                          Math.max(1, Number.isFinite(value) ? value : 1000)
+                        ),
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="rounded-lg border border-indigo-100 bg-indigo-50 p-3">
+                  <div className="flex items-center gap-2 text-indigo-700">
+                    <Bot size={15} />
+                    <p className="text-[11px] font-semibold">
+                      AI Agent
+                    </p>
+                  </div>
+
+                  <p className="mt-2 text-[10px] leading-5 text-indigo-700">
+                    The AI agent will analyze the contact data and save
+                    its response for use in subsequent workflow steps.
+                  </p>
+                </div>
+              </>
             )}
 
             {/* =================================

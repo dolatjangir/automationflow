@@ -13,6 +13,7 @@ export type JourneyNodeType =
   | "sms"
   | "condition"
   | "assign"
+  | "ai_agent"
   | "end";
 
 /* =========================================
@@ -23,7 +24,27 @@ export type JourneyActionCategory =
   | "triggers"
   | "communication"
   | "flow"
-  | "crm";
+  | "crm"
+  | "ai";
+
+/* =========================================
+   AI AGENT CONFIGURATION
+========================================= */
+
+export type AIProvider = "openai" | "gemini" | "groq";
+
+export type AIOutputFormat = "text" | "json";
+
+export interface AIAgentConfig {
+  provider?: AIProvider;
+  model?: string;
+  instructions?: string;
+  input?: string;
+  outputFormat?: AIOutputFormat;
+  outputKey?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
 
 /* =========================================
    NODE CONFIGURATION
@@ -31,7 +52,7 @@ export type JourneyActionCategory =
 
 export interface JourneyNodeConfig
   extends Record<string, unknown> {
-  provider?: "baileys" | "meta";
+  provider?: "baileys" | "meta" | AIProvider;
   account?: string;
   messageType?: "template" | "custom";
   template?: string;
@@ -45,6 +66,15 @@ export interface JourneyNodeConfig
   value?: string;
   assignee?: string;
   triggerEvent?: string;
+
+  // AI Agent configuration
+  model?: string;
+  instructions?: string;
+  input?: string;
+  outputFormat?: AIOutputFormat;
+  outputKey?: string;
+  temperature?: number;
+  maxTokens?: number;
 }
 
 /* =========================================
