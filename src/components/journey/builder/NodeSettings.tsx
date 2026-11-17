@@ -353,43 +353,6 @@ const [showApiKey, setShowApiKey] = useState(false);
     <p>
       Provider: {String(config.provider ?? "openai")}
     </p>
-    {/* API KEY */}
-<div>
-  <label className={labelClass}>
-    {String(config.provider ?? "openai").toUpperCase()} API Key
-    <span className="text-rose-500"> *</span>
-  </label>
-
-  <div className="relative mt-1">
-    <input
-      type={showApiKey ? "text" : "password"}
-      className={`${fieldClass} pr-16`}
-      value={apiKey}
-      onChange={(event) => setApiKey(event.target.value)}
-      placeholder={`Enter ${
-        config.provider === "gemini"
-          ? "Google Gemini"
-          : config.provider === "groq"
-            ? "Groq"
-            : "OpenAI"
-      } API Key`}
-      autoComplete="new-password"
-    />
-
-    <button
-      type="button"
-      onClick={() => setShowApiKey((previous) => !previous)}
-      className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[#536579]"
-    >
-      {showApiKey ? "Hide" : "Show"}
-    </button>
-  </div>
-
-  <p className="mt-1 text-[10px] text-[#8293A8]">
-    Enter the API key for your selected AI provider.
-    Secure saving will be connected in the next step.
-  </p>
-</div>
     <p>
       Model: {String(config.model ?? "Not configured")}
     </p>
@@ -955,25 +918,57 @@ const [showApiKey, setShowApiKey] = useState(false);
                   <select
                     className={fieldClass}
                     value={String(config.provider ?? "openai")}
-                 onChange={(event) => {
-                  setConfig({
-                    provider: event.target.value as
-                      | "openai"
-                      | "gemini"
-                      | "groq",
-                    model: "",
-                  });
-
-  setApiKey("");
-  setShowApiKey(false);
-}}
+                    onChange={(event) => {
+                      setConfig({
+                        provider: event.target.value as
+                          | "openai"
+                          | "gemini"
+                          | "groq",
+                        model: "",
+                      });
+                    }}
                   >
                     <option value="openai">OpenAI</option>
                     <option value="gemini">Google Gemini</option>
                     <option value="groq">Groq</option>
                   </select>
                 </div>
+                    {/* API KEY */}
+<div>
+  <label className={labelClass}>
+    {String(config.provider ?? "openai").toUpperCase()} API Key
+    <span className="text-rose-500"> *</span>
+  </label>
 
+  <div className="relative mt-1">
+    <input
+      type={showApiKey ? "text" : "password"}
+      className={`${fieldClass} pr-16`}
+      value={apiKey}
+      onChange={(event) => setApiKey(event.target.value)}
+      placeholder={`Enter ${
+        config.provider === "gemini"
+          ? "Google Gemini"
+          : config.provider === "groq"
+            ? "Groq"
+            : "OpenAI"
+      } API Key`}
+      autoComplete="new-password"
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowApiKey((previous) => !previous)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[#536579]"
+    >
+      {showApiKey ? "Hide" : "Show"}
+    </button>
+  </div>
+
+  <p className="mt-1 text-[10px] text-[#8293A8]">
+    Secure API key saving will be connected next.
+  </p>
+</div>
                 {/* MODEL */}
                 <div>
                   <label className={labelClass}>
