@@ -40,6 +40,7 @@ enum JourneyNodeType {
   sms
   condition
   assign
+  ai_agent
   end
 }
 
@@ -64,6 +65,12 @@ enum LogLevel {
   error
 }
 
+enum AIProvider {
+  openai
+  gemini
+  groq
+}
+
 // ==========================================
 // USERS
 // ==========================================
@@ -77,14 +84,41 @@ model User {
   role     UserRole @default(agent)
   isActive Boolean  @default(true)
 
-  contacts        Contact[]
-  createdJourneys Journey[] @relation("JourneyCreator")
+  contacts              Contact[]
+  createdJourneys       Journey[]              @relation("JourneyCreator")
+  aiProviderCredentials AIProviderCredential[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([role])
   @@index([isActive])
+}
+
+// ==========================================
+// AI PROVIDER CREDENTIALS
+// ==========================================
+
+model AIProviderCredential {
+  id String @id @default(cuid()) @db.VarChar(191)
+
+  userId String @db.VarChar(191)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider AIProvider
+
+  // Always store encrypted API keys, never plaintext.
+  encryptedApiKey String @db.Text
+
+  // Optional masked identifier, not the actual API key.
+  keyHint String? @db.VarChar(30)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // One credential per provider per user.
+  @@unique([userId, provider])
+  @@index([provider])
 }
 
 // ==========================================
@@ -245,18 +279,19 @@ model JourneyExecution {
   // Data received when the journey was triggered.
   triggerData Json?
 
+  // Shared execution data, including AI Agent results.
+  context      Json?
   errorMessage String? @db.Text
   retryCount   Int     @default(0)
 
   startedAt   DateTime?
   completedAt DateTime?
 
-  logs ExecutionLog[]
+  logs      ExecutionLog[]
   nextRunAt DateTime?
-lockedAt  DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  lockedAt  DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   @@index([status, nextRunAt])
   @@index([status, lockedAt])

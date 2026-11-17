@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { DragEvent } from "react";
 
 import {
+  Bot,
   CalendarCheck,
   ChevronDown,
   Clock3,
@@ -200,6 +201,26 @@ const actionItems: ActionItem[] = [
       assignee: "Property Sales Team",
     },
   },
+    {
+    id: "ai-agent",
+    title: "AI Agent",
+    description: "Analyze and process lead data using AI",
+    type: "ai_agent",
+    category: "ai",
+    icon: "bot",
+    color: "indigo",
+    iconComponent: Bot,
+    config: {
+      provider: "openai",
+      model: "gpt-4o-mini",
+      instructions: "Analyze the contact information and provide useful insights.",
+      input: "{{contact}}",
+      outputFormat: "json",
+      outputKey: "aiResult",
+      temperature: 0.2,
+      maxTokens: 1000,
+    },
+  },
   {
     id: "end-journey",
     title: "End Journey",
@@ -225,6 +246,7 @@ const groups: {
   { id: "communication", label: "Communication" },
   { id: "flow", label: "Flow Control" },
   { id: "crm", label: "CRM Actions" },
+   { id: "ai", label: "AI Actions" },
 ];
 
 /* =========================================
@@ -237,6 +259,7 @@ const iconTone: Record<string, string> = {
   purple: "bg-violet-50 text-violet-600",
   orange: "bg-amber-50 text-amber-600",
   red: "bg-rose-50 text-rose-600",
+   indigo: "bg-indigo-50 text-indigo-600",
 };
 
 /* =========================================
