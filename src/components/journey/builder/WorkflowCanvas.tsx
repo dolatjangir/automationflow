@@ -38,6 +38,7 @@ import EmailNode from "./nodes/EmailNode";
 import SMSNode from "./nodes/SMSNode";
 import ConditionNode from "./nodes/ConditionNode";
 import AssignUserNode from "./nodes/AssignUserNode";
+import AIAgentNode from "./nodes/AIAgentNode";
 import EndNode from "./nodes/EndNode";
 
 /* =========================================
@@ -52,6 +53,7 @@ const nodeTypes = {
   sms: SMSNode,
   condition: ConditionNode,
   assign: AssignUserNode,
+  ai_agent: AIAgentNode,
   end: EndNode,
 };
 

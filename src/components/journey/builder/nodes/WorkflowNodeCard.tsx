@@ -6,7 +6,7 @@ import type { JourneyNodeData } from "@/types/journey-builder";
 interface WorkflowNodeCardProps {
   data: JourneyNodeData;
   icon: LucideIcon;
-  tone: "green" | "purple" | "blue" | "orange" | "red";
+  tone: "green" | "purple" | "blue" | "orange" | "red" | "indigo";
   selected?: boolean;
   showTarget?: boolean;
   sourceHandles?: "single" | "branch" | "none";
@@ -38,6 +38,11 @@ const toneClasses = {
     icon: "bg-rose-50 text-rose-600",
     accent: "bg-rose-500",
   },
+  indigo: {
+    border: "border-indigo-300",
+    icon: "bg-indigo-50 text-indigo-600",
+    accent: "bg-indigo-500",
+  }
 };
 
 export default function WorkflowNodeCard({
