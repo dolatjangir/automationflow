@@ -36,7 +36,7 @@ const Login = () => {
 
   if (isLoading) {
     return (
-      <div className="grid place-items-center h-screen w-full text-lg text-gray-600">
+      <div className="grid place-items-center h-screen w-full text-lg text-[var(--color-crm-muted)]">
         Loading...
       </div>
     );
@@ -51,41 +51,41 @@ const Login = () => {
   };
 
   return (
-    <div className="h-[100dvh] lg:h-screen overflow-hidden w-full grid lg:grid-cols-[1.15fr_1fr] bg-white dark:bg-[var(--color-secondary-darker)]">
+    <div className="h-[100dvh] lg:h-screen overflow-hidden w-full grid lg:grid-cols-[1.15fr_1fr] bg-[var(--color-crm-surface)] dark:bg-[var(--color-crm-heading)]">
       <Toaster position="top-right" />
 
       {/* ─────────────── LEFT PANEL (DESKTOP ONLY — UNCHANGED) ─────────────── */}
-      <div className="relative hidden lg:flex h-screen min-h-0 flex-col justify-between overflow-hidden px-8 xl:px-12 py-[clamp(1rem,2.5vh,2rem)] bg-gradient-to-br from-[var(--color-primary-lighter)] via-[#eef3fd] to-white dark:from-[var(--color-secondary-darker)] dark:via-[var(--color-secondary-dark)] dark:to-[var(--color-secondary-darker)]">
+      <div className="relative hidden lg:flex h-screen min-h-0 flex-col justify-between overflow-hidden px-8 xl:px-12 py-[clamp(1rem,2.5vh,2rem)] bg-gradient-to-br from-[var(--color-crm-primary-light)] via-[var(--color-crm-background)] to-[var(--color-crm-surface)] dark:from-[var(--color-crm-heading)] dark:via-[var(--color-crm-text)] dark:to-[var(--color-crm-heading)]">
         {/* decorative dotted grid */}
         <div
           className="pointer-events-none absolute top-8 right-8 h-20 w-20 opacity-40"
           style={{
             backgroundImage:
-              "radial-gradient(var(--color-primary-light) 1.5px, transparent 1.5px)",
+              "radial-gradient(var(--color-crm-primary) 1.5px, transparent 1.5px)",
             backgroundSize: "12px 12px",
           }}
         />
 
         {/* logo */}
-        <div className="relative z-10 shrink-0">
+        <div className="relative z-10 shrink-0 text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
          CRM
         </div>
 
         {/* main content + illustration */}
         <div className="relative z-10 min-h-0 flex-1 grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-6 items-center py-[clamp(0.5rem,2vh,1.5rem)]">
           <div className="min-h-0">
-            <h1 className="text-[clamp(2.6rem,4.4vh,3.4rem)] leading-[1.15] font-extrabold text-[var(--color-secondary-darker)] dark:text-white">
+            <h1 className="text-[clamp(2.6rem,4.4vh,3.4rem)] leading-[1.15] font-extrabold text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
               {heading.lineOne}
               <br />
               {heading.lineTwo}
-              <span className="text-[var(--color-primary)]">
+              <span className="text-[var(--color-crm-primary)]">
                 {heading.highlight}
               </span>
             </h1>
 
-            <div className="mt-[clamp(0.5rem,1.2vh,1rem)] h-1.5 w-14 rounded-full bg-[var(--color-primary)]" />
+            <div className="mt-[clamp(0.5rem,1.2vh,1rem)] h-1.5 w-14 rounded-full bg-[var(--color-crm-primary)]" />
 
-            <p className="mt-[clamp(0.75rem,2vh,1.5rem)] text-[clamp(0.8rem,1.7vh,0.95rem)] leading-relaxed text-gray-600 dark:text-gray-300 max-w-[420px]">
+            <p className="mt-[clamp(0.75rem,2vh,1.5rem)] text-[clamp(0.8rem,1.7vh,0.95rem)] leading-relaxed text-[var(--color-crm-text)] dark:text-[var(--color-crm-border)] max-w-[420px]">
               {description}
             </p>
 
@@ -95,14 +95,14 @@ const Login = () => {
                 const Icon = feature.icon;
                 return (
                   <li key={feature.title} className="flex gap-3.5">
-                    <span className="grid place-items-center shrink-0 h-[clamp(2rem,4.2vh,2.75rem)] w-[clamp(2rem,4.2vh,2.75rem)] rounded-full bg-white shadow-sm text-[var(--color-primary)]">
+                    <span className="grid place-items-center shrink-0 h-[clamp(2rem,4.2vh,2.75rem)] w-[clamp(2rem,4.2vh,2.75rem)] rounded-full bg-[var(--color-crm-surface)] shadow-sm text-[var(--color-crm-primary)]">
                       <Icon className="text-[clamp(1.8rem,2.8vh,2.1rem)]" />
                     </span>
                     <div>
-                      <h3 className="text-[clamp(0.85rem,1.8vh,1rem)] font-semibold text-[var(--color-secondary-darker)] dark:text-white">
+                      <h3 className="text-[clamp(0.85rem,1.8vh,1rem)] font-semibold text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
                         {feature.title}
                       </h3>
-                      <p className="text-[clamp(0.72rem,1.5vh,0.85rem)] text-gray-500 dark:text-gray-400 max-w-[300px] leading-snug">
+                      <p className="text-[clamp(0.72rem,1.5vh,0.85rem)] text-[var(--color-crm-muted)] dark:text-[var(--color-crm-border)] max-w-[300px] leading-snug">
                         {feature.description}
                       </p>
                     </div>
@@ -123,31 +123,31 @@ const Login = () => {
         </div>
 
         {/* highlight card */}
-        <div className="relative z-10 shrink-0 rounded-2xl bg-white/80 dark:bg-white/5 backdrop-blur shadow-sm px-5 py-[clamp(0.75rem,2vh,1.25rem)] flex items-center gap-6">
+        <div className="relative z-10 shrink-0 rounded-2xl bg-[var(--color-crm-surface)]/80 dark:bg-[var(--color-crm-surface)]/5 backdrop-blur shadow-sm border border-[var(--color-crm-border)] px-5 py-[clamp(0.75rem,2vh,1.25rem)] flex items-center gap-6">
           <div className="flex items-start gap-3.5 max-w-[340px]">
-            <span className="grid place-items-center shrink-0 h-[clamp(2rem,4.2vh,2.75rem)] w-[clamp(2rem,4.2vh,2.75rem)] rounded-full bg-[var(--color-primary-lighter)] text-[var(--color-primary)]">
+            <span className="grid place-items-center shrink-0 h-[clamp(2rem,4.2vh,2.75rem)] w-[clamp(2rem,4.2vh,2.75rem)] rounded-full bg-[var(--color-crm-primary-light)] text-[var(--color-crm-primary)]">
               <highlightCard.icon className="text-[clamp(1.8rem,2.8vh,2.1rem)]" />
             </span>
             <div>
-              <h3 className="text-[clamp(0.85rem,1.8vh,1rem)] font-semibold text-[var(--color-primary)]">
+              <h3 className="text-[clamp(0.85rem,1.8vh,1rem)] font-semibold text-[var(--color-crm-primary)]">
                 {highlightCard.title}
               </h3>
-              <p className="text-[clamp(0.72rem,1.5vh,0.85rem)] text-gray-500 dark:text-gray-400 leading-snug">
+              <p className="text-[clamp(0.72rem,1.5vh,0.85rem)] text-[var(--color-crm-muted)] dark:text-[var(--color-crm-border)] leading-snug">
                 {highlightCard.description}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-1 divide-x divide-gray-200 dark:divide-white/10">
+          <div className="flex flex-1 divide-x divide-[var(--color-crm-border)] dark:divide-white/10">
             {highlightCard.stats.map((stat) => {
               const Icon = stat.icon;
               return (
                 <div key={stat.label} className="flex-1 text-center px-2">
-                  <Icon className="mx-auto text-[var(--color-primary)] mb-0.5 text-[clamp(1.75rem,2.6vh,1.95rem)]" />
-                  <p className="text-[clamp(0.9rem,2vh,1.15rem)] font-bold leading-tight text-[var(--color-secondary-darker)] dark:text-white">
+                  <Icon className="mx-auto text-[var(--color-crm-primary)] mb-0.5 text-[clamp(1.75rem,2.6vh,1.95rem)]" />
+                  <p className="text-[clamp(0.9rem,2vh,1.15rem)] font-bold leading-tight text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
                     {stat.value}
                   </p>
-                  <p className="text-[clamp(0.65rem,1.4vh,0.75rem)] text-gray-500 dark:text-gray-400">
+                  <p className="text-[clamp(0.65rem,1.4vh,0.75rem)] text-[var(--color-crm-muted)] dark:text-[var(--color-crm-border)]">
                     {stat.label}
                   </p>
                 </div>
@@ -158,15 +158,15 @@ const Login = () => {
       </div>
 
       {/* ─────────────── RIGHT PANEL ─────────────── */}
-      <div className="relative flex flex-col items-center h-[100dvh] lg:h-screen overflow-hidden lg:overflow-y-auto px-0 lg:px-5 py-0 lg:py-8 bg-white dark:bg-[var(--color-secondary-darker)]">
+      <div className="relative flex flex-col items-center h-[100dvh] lg:h-screen overflow-hidden lg:overflow-y-auto px-0 lg:px-5 py-0 lg:py-8 bg-[var(--color-crm-surface)] dark:bg-[var(--color-crm-heading)]">
         {/* ═══════════ MOBILE HEADER (mobile only, desktop untouched) ═══════════ */}
-        <div className="lg:hidden relative w-full shrink-0 overflow-hidden rounded-b-[1.75rem] bg-gradient-to-br from-[var(--color-primary-lighter)] via-[#eef3fd] to-white dark:from-[var(--color-secondary-darker)] dark:via-[var(--color-secondary-dark)] dark:to-[var(--color-secondary-darker)] px-5 pt-[clamp(0.75rem,2.4dvh,1.1rem)] pb-[clamp(0.9rem,3dvh,1.4rem)]">
+        <div className="lg:hidden relative w-full shrink-0 overflow-hidden rounded-b-[1.75rem] bg-gradient-to-br from-[var(--color-crm-primary-light)] via-[var(--color-crm-background)] to-[var(--color-crm-surface)] dark:from-[var(--color-crm-heading)] dark:via-[var(--color-crm-text)] dark:to-[var(--color-crm-heading)] px-5 pt-[clamp(0.75rem,2.4dvh,1.1rem)] pb-[clamp(0.9rem,3dvh,1.4rem)]">
           {/* decorative dotted grid — same treatment as the desktop panel */}
           <div
             className="pointer-events-none absolute -top-2 -right-2 h-24 w-24 opacity-40"
             style={{
               backgroundImage:
-                "radial-gradient(var(--color-primary-light) 1.5px, transparent 1.5px)",
+                "radial-gradient(var(--color-crm-primary) 1.5px, transparent 1.5px)",
               backgroundSize: "12px 12px",
             }}
           />
@@ -176,13 +176,13 @@ const Login = () => {
           </div>
 
           {/* illustration */}
-          <div className="relative z-10 mt-[clamp(1.4rem,2.6dvh,1.75rem)] mb-5 flex justify-center">
+          <div className="relative z-10 mt-[clamp(1.4rem,2.6dvh,1.75rem)] mb-5 flex justify-center text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
            CRM
            
           </div>
 
           {/* tagline */}
-          <h2 className="relative z-10 mt-[clamp(0.35rem,1.2dvh,0.6rem)] text-center text-[clamp(1rem,3dvh,1.25rem)] font-bold leading-snug text-[var(--color-secondary-darker)] dark:text-white">
+          <h2 className="relative z-10 mt-[clamp(0.35rem,1.2dvh,0.6rem)] text-center text-[clamp(1rem,3dvh,1.25rem)] font-bold leading-snug text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
             Log in to stay on top of
             <br />
             your tasks and projects.
@@ -190,18 +190,18 @@ const Login = () => {
         </div>
 
         <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center lg:justify-center px-5 lg:px-0 overflow-y-auto">
-          <div className="w-full max-w-[480px] rounded-3xl lg:rounded-3xl bg-white dark:bg-white/5 lg:shadow-[0_10px_40px_rgba(15,23,42,0.08)] px-1 sm:px-8 lg:px-8 py-[clamp(0.6rem,2dvh,1.5rem)] lg:py-[clamp(1.25rem,4vh,2.25rem)]">
+          <div className="w-full max-w-[480px] rounded-3xl lg:rounded-3xl bg-[var(--color-crm-surface)] dark:bg-[var(--color-crm-surface)]/5 lg:shadow-[0_10px_40px_rgba(22,50,77,0.08)] px-1 sm:px-8 lg:px-8 py-[clamp(0.6rem,2dvh,1.5rem)] lg:py-[clamp(1.25rem,4vh,2.25rem)]">
             {/* lock badge — desktop only, mobile already shows illustration above */}
             <div className="hidden lg:grid place-items-center">
-              <span className="grid place-items-center h-[clamp(2.75rem,6vh,4rem)] w-[clamp(2.75rem,6vh,4rem)] rounded-full bg-[var(--color-primary-lighter)] text-[var(--color-primary)]">
+              <span className="grid place-items-center h-[clamp(2.75rem,6vh,4rem)] w-[clamp(2.75rem,6vh,4rem)] rounded-full bg-[var(--color-crm-primary-light)] text-[var(--color-crm-primary)]">
                 <FaLock className="text-[clamp(0.9rem,2.2vh,1.25rem)]" />
               </span>
             </div>
 
-            <h2 className="mt-0 lg:mt-[clamp(0.6rem,1.8vh,1.25rem)] text-center text-[clamp(1.15rem,3dvh,1.9rem)] lg:text-[clamp(1.35rem,3.2vh,1.9rem)] font-bold text-[var(--color-secondary-darker)] dark:text-white">
+            <h2 className="mt-0 lg:mt-[clamp(0.6rem,1.8vh,1.25rem)] text-center text-[clamp(1.15rem,3dvh,1.9rem)] lg:text-[clamp(1.35rem,3.2vh,1.9rem)] font-bold text-[var(--color-crm-heading)] dark:text-[var(--color-crm-surface)]">
               {form.title}
             </h2>
-            <p className="mt-1 text-center text-[clamp(0.7rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-center text-[clamp(0.7rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] text-[var(--color-crm-muted)] dark:text-[var(--color-crm-border)]">
               {form.subtitle}
             </p>
 
@@ -213,12 +213,12 @@ const Login = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block mb-1.5 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] font-semibold text-[var(--color-secondary-darker)] dark:text-gray-200"
+                  className="block mb-1.5 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] font-semibold text-[var(--color-crm-heading)] dark:text-[var(--color-crm-border)]"
                 >
                   {form.emailLabel}
                 </label>
-                <div className="flex items-center gap-3 rounded-xl border border-[var(--color-primary-light)] focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary-lighter)] transition px-3 py-[clamp(0.4rem,1.3dvh,0.75rem)] lg:py-[clamp(0.5rem,1.4vh,0.75rem)]">
-                  <span className="grid place-items-center h-8 w-8 shrink-0 rounded-lg bg-[var(--color-primary-lighter)] text-[var(--color-primary)]">
+                <div className="flex items-center gap-3 rounded-xl border border-[var(--color-crm-border)] focus-within:border-[var(--color-crm-primary)] focus-within:ring-2 focus-within:ring-[var(--color-crm-primary-light)] transition px-3 py-[clamp(0.4rem,1.3dvh,0.75rem)] lg:py-[clamp(0.5rem,1.4vh,0.75rem)]">
+                  <span className="grid place-items-center h-8 w-8 shrink-0 rounded-lg bg-[var(--color-crm-primary-light)] text-[var(--color-crm-primary)]">
                     <FaEnvelope className="text-sm" />
                   </span>
                   <input
@@ -228,7 +228,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={form.emailPlaceholder}
-                    className="w-full bg-transparent outline-none text-[var(--color-secondary-darker)] dark:text-white placeholder:text-gray-400"
+                    className="w-full bg-transparent outline-none text-[var(--color-crm-text)] dark:text-[var(--color-crm-surface)] placeholder:text-[var(--color-crm-muted)]"
                   />
                 </div>
               </div>
@@ -237,12 +237,12 @@ const Login = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-1.5 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] font-semibold text-[var(--color-secondary-darker)] dark:text-gray-200"
+                  className="block mb-1.5 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] font-semibold text-[var(--color-crm-heading)] dark:text-[var(--color-crm-border)]"
                 >
                   {form.passwordLabel}
                 </label>
-                <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 dark:bg-white/5 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary-lighter)] transition px-3 py-[clamp(0.4rem,1.3dvh,0.75rem)] lg:py-[clamp(0.5rem,1.4vh,0.75rem)]">
-                  <span className="grid place-items-center h-8 w-8 shrink-0 rounded-lg bg-gray-200 dark:bg-white/10 text-gray-500">
+                <div className="flex items-center gap-3 rounded-xl border border-[var(--color-crm-border)] bg-[var(--color-crm-surface-secondary)] dark:bg-[var(--color-crm-surface)]/5 focus-within:border-[var(--color-crm-primary)] focus-within:ring-2 focus-within:ring-[var(--color-crm-primary-light)] transition px-3 py-[clamp(0.4rem,1.3dvh,0.75rem)] lg:py-[clamp(0.5rem,1.4vh,0.75rem)]">
+                  <span className="grid place-items-center h-8 w-8 shrink-0 rounded-lg bg-[var(--color-crm-border)] dark:bg-[var(--color-crm-surface)]/10 text-[var(--color-crm-muted)]">
                     <FaLock className="text-sm" />
                   </span>
                   <input
@@ -252,12 +252,12 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={form.passwordPlaceholder}
-                    className="w-full bg-transparent outline-none text-[var(--color-secondary-darker)] dark:text-white placeholder:text-gray-400"
+                    className="w-full bg-transparent outline-none text-[var(--color-crm-text)] dark:text-[var(--color-crm-surface)] placeholder:text-[var(--color-crm-muted)]"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="text-gray-400 hover:text-[var(--color-primary)] cursor-pointer transition"
+                    className="text-[var(--color-crm-muted)] hover:text-[var(--color-crm-primary)] cursor-pointer transition"
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -267,18 +267,18 @@ const Login = () => {
 
               {/* remember + forgot */}
               {/* <div className="flex items-center justify-between text-[clamp(0.75rem,1.6vh,0.875rem)]">
-              <label className="flex items-center gap-2 cursor-pointer select-none text-gray-600 dark:text-gray-300">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-[var(--color-crm-text)] dark:text-[var(--color-crm-border)]">
                 <input
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 rounded accent-[var(--color-primary)] cursor-pointer"
+                  className="h-4 w-4 rounded accent-[var(--color-crm-primary)] cursor-pointer"
                 />
                 {form.rememberLabel}
               </label>
               <Link
                 href={form.forgotHref}
-                className="text-[var(--color-primary)] hover:underline"
+                className="text-[var(--color-crm-primary)] hover:underline"
               >
                 {form.forgotLabel}
               </Link>
@@ -288,7 +288,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full cursor-pointer flex items-center justify-center gap-2 py-[clamp(0.5rem,1.6dvh,0.9rem)] lg:py-[clamp(0.6rem,1.7vh,0.9rem)] rounded-xl text-white font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary-dark)] hover:from-[var(--color-primary-dark)] hover:to-[var(--color-primary-darker)] shadow-lg shadow-[var(--color-primary-lighter)] transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="w-full cursor-pointer flex items-center justify-center gap-2 py-[clamp(0.5rem,1.6dvh,0.9rem)] lg:py-[clamp(0.6rem,1.7vh,0.9rem)] rounded-xl text-[var(--color-crm-surface)] font-semibold bg-gradient-to-r from-[var(--color-crm-primary)] to-[var(--color-crm-primary-dark)] hover:from-[var(--color-crm-primary-dark)] hover:to-[var(--color-crm-heading)] shadow-lg shadow-[var(--color-crm-primary-light)] transition disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <FaLock className="text-sm" />
                 {loading ? form.submitLoadingLabel : form.submitLabel}
@@ -297,20 +297,20 @@ const Login = () => {
 
             {/* divider */}
             <div className="my-[clamp(0.5rem,1.6dvh,1.5rem)] lg:my-[clamp(0.75rem,2.2vh,1.5rem)] flex items-center gap-4">
-              <span className="h-px flex-1 bg-gray-200 dark:bg-white/10" />
-              <span className="text-sm text-gray-400">{form.dividerLabel}</span>
-              <span className="h-px flex-1 bg-gray-200 dark:bg-white/10" />
+              <span className="h-px flex-1 bg-[var(--color-crm-border)] dark:bg-[var(--color-crm-surface)]/10" />
+              <span className="text-sm text-[var(--color-crm-muted)]">{form.dividerLabel}</span>
+              <span className="h-px flex-1 bg-[var(--color-crm-border)] dark:bg-[var(--color-crm-surface)]/10" />
             </div>
 
             {/* register */}
             <Link
               href={form.registerHref}
-              className="flex items-center justify-center gap-2 w-full py-[clamp(0.5rem,1.6dvh,0.9rem)] lg:py-[clamp(0.6rem,1.7vh,0.9rem)] rounded-xl border border-gray-200 dark:border-white/10 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] text-gray-600 dark:text-gray-300 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition"
+              className="flex items-center justify-center gap-2 w-full py-[clamp(0.5rem,1.6dvh,0.9rem)] lg:py-[clamp(0.6rem,1.7vh,0.9rem)] rounded-xl border border-[var(--color-crm-border)] dark:border-[var(--color-crm-surface)]/10 text-[clamp(0.72rem,1.4dvh,0.875rem)] lg:text-[clamp(0.75rem,1.6vh,0.875rem)] text-[var(--color-crm-text)] dark:text-[var(--color-crm-border)] hover:border-[var(--color-crm-primary)] hover:text-[var(--color-crm-primary)] transition"
             >
-              <FaUserPlus className="text-gray-400" />
+              <FaUserPlus className="text-[var(--color-crm-muted)]" />
               <span>
                 {form.registerPrompt}{" "}
-                <span className="text-[var(--color-primary)] font-semibold">
+                <span className="text-[var(--color-crm-primary)] font-semibold">
                   {form.registerLabel}
                 </span>
               </span>
@@ -319,13 +319,13 @@ const Login = () => {
 
           {/* footer */}
           <div className="mt-[clamp(0.4rem,1.4dvh,2rem)] lg:mt-[clamp(1rem,2.5vh,2rem)] text-center space-y-1 shrink-0">
-            <p className="flex items-center justify-center gap-2 text-[10px] lg:text-xs text-gray-400">
-              <FaShieldAlt className="text-[var(--color-primary-light)]" />
+            <p className="flex items-center justify-center gap-2 text-[10px] lg:text-xs text-[var(--color-crm-muted)]">
+              <FaShieldAlt className="text-[var(--color-crm-primary)]" />
               {form.securityNote}
             </p>
-            <p className="hidden lg:block text-xs text-gray-400">
+            <p className="hidden lg:block text-xs text-[var(--color-crm-muted)]">
               &copy; {currentYear}{" "}
-              <span className="text-[var(--color-primary)] font-medium">
+              <span className="text-[var(--color-crm-primary)] font-medium">
                 {form.brandName}
               </span>
               . {form.copyrightSuffix}
