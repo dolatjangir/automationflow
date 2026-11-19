@@ -1,46 +1,78 @@
- "use client";
-import { useEffect, useState } from "react";
+"use client";
+
+import { Suspense, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRouteContent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { admin, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const publicPaths = [
+    "/admin",
+    "/register",
+    "/system/maintenance/access/signup",
+  ];
+
+  const isPublicPage = publicPaths.includes(pathname);
+  const shouldBlock = !isPublicPage && (isLoading || !admin);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isPublicPage) return;
 
-    if (!admin && pathname !== "/system/maintenance/access/signup") {
-      setIsRedirecting(true);
+    if (!admin) {
       router.replace("/admin");
-      return;
     }
+  }, [admin, isLoading, isPublicPage, router]);
 
-    if (admin && pathname === "/system/maintenance/access/signup") {
-      setIsRedirecting(true);
-      router.replace("/dashboard");
-      return;
-    }
-
-    setIsRedirecting(false);
-  }, [admin, isLoading, pathname, router]);
-
-  // Show loader while auth is resolving OR while redirect is in flight
-  if (isLoading || isRedirecting) {
-    return (
-      <div className="grid place-items-center min-h-screen">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-500">Loading...</p>
-        </div>
+  return (
+    <div className="relative min-h-full">
+      {/* Always render route children */}
+      <div
+        className={shouldBlock ? "invisible" : "visible"}
+        aria-hidden={shouldBlock}
+      >
+        {children}
       </div>
-    );
-  }
 
-  // Don't render children if not authenticated (redirect is already queued above)
-  if (!admin) return null;
+      {/* Loading overlay */}
+      {shouldBlock && (
+        <div
+          className="fixed inset-0 z-[9999] grid min-h-screen place-items-center bg-white"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500 border-t-transparent" />
+            <p className="text-sm text-gray-500">
+              {isLoading ? "Checking authentication..." : "Redirecting..."}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-  return <>{children}</>;
+export default function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div className="grid min-h-screen place-items-center">
+          Loading...
+        </div>
+      }
+    >
+      <ProtectedRouteContent>{children}</ProtectedRouteContent>
+    </Suspense>
+  );
 }
