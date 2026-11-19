@@ -1,4 +1,3 @@
-
 "use client";
 
 import "@xyflow/react/dist/style.css";
@@ -14,12 +13,15 @@ import ActionSidebar from "@/components/journey/builder/ActionSidebar";
 import WorkflowCanvas from "@/components/journey/builder/WorkflowCanvas";
 import NodeSettings from "@/components/journey/builder/NodeSettings";
 
+
+
 import type {
   JourneyFlowEdge,
   JourneyFlowNode,
   JourneyNodeData,
   ActionDefinition,
 } from "@/types/journey-builder";
+import { API_ROUTES } from "@/constants/ApiRoutes";
 
 function JourneyBuilderContent() {
   const params = useParams<{ id: string }>();
@@ -58,8 +60,14 @@ function JourneyBuilderContent() {
       try {
         setLoading(true);
 
+        // 1. Guard check: If routeId is missing or invalid, don't attempt to fetch
+        if (!routeId) {
+          console.warn("No routeId provided for journey initialization.");
+          return;
+        }
+
         if (routeId === "new") {
-          const response = await fetch("/api/journeys", {
+          const response = await fetch(API_ROUTES.JOURNEY.ADD, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -71,6 +79,7 @@ function JourneyBuilderContent() {
               nodes: [],
               edges: [],
             }),
+            credentials: "include", // Include credentials if your API requires authentication
           });
 
           const result = await response.json();
@@ -98,15 +107,17 @@ function JourneyBuilderContent() {
           return;
         }
 
-        const response = await fetch(`/api/journeys/${routeId}`, {
+        const response = await fetch(API_ROUTES.JOURNEY.GET_BY_ID(routeId), {
           cache: "no-store",
+          credentials: "include",
         });
 
         const result = await response.json();
 
         if (!response.ok || !result.success) {
+          // If a specific ID was passed but doesn't exist, handle it gracefully
           throw new Error(
-            result.message || "Could not load journey."
+            result.message || "Journey not found."
           );
         }
 
@@ -170,7 +181,7 @@ function JourneyBuilderContent() {
         }
       }
     }
-
+    
     initializeJourney();
 
     return () => {
@@ -286,11 +297,12 @@ function JourneyBuilderContent() {
     try {
       setSaving(true);
 
-      const response = await fetch(`/api/journeys/${journeyId}`, {
+      const response = await fetch(API_ROUTES.JOURNEY.UPDATE(journeyId), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           name: journeyName.trim() || "Untitled Journey",
           status: nextStatus,
@@ -306,7 +318,7 @@ function JourneyBuilderContent() {
             id: edge.id,
             source: edge.source,
             target: edge.target,
-            sourceHandle: edge.sourceHandle,
+            sourceHandle: edge.targetHandle,
             targetHandle: edge.targetHandle,
             type: edge.type,
             label: edge.label,
@@ -389,11 +401,12 @@ const handleTest = async () => {
     setToast("Saving journey before testing...");
 
     // 1. Save the latest workflow as a draft.
-    const saveResponse = await fetch(`/api/journeys/${journeyId}`, {
+    const saveResponse = await fetch(API_ROUTES.JOURNEY.UPDATE(journeyId), {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({
         name: journeyName.trim() || "Untitled Journey",
         status,
@@ -431,12 +444,13 @@ const handleTest = async () => {
 
     // 2. Create a new test execution.
     const createResponse = await fetch(
-      `/api/journeys/${journeyId}/test`,
+      API_ROUTES.JOURNEY.CREATE_TEST(journeyId),
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           testData: {
             firstName: "Test",
@@ -462,9 +476,10 @@ const handleTest = async () => {
 
     // 3. Run the test execution.
     const runResponse = await fetch(
-      `/api/journeys/${journeyId}/test/${executionId}/run`,
+      API_ROUTES.JOURNEY.RUN_TEST(journeyId, executionId),
       {
         method: "POST",
+        credentials: "include",
       }
     );
 
